@@ -2,7 +2,7 @@ require 'sinatra'
 require 'httparty'
 require 'json'
 
-API_KEY = '62a28ffed03d06393fb6c2482ddc7ca7' # Replace with your OpenWeatherMap API key
+API_KEY = 'OpenWeatherMap API key' # Replace with your OpenWeatherMap API key
 
 get '/' do
   erb :index
