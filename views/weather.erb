@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather Forecast for <%= @city || "the selected location" %></title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    #weather-forecast {
+      font-family: Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    #weather-forecast td, #weather-forecast th {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+
+    #weather-forecast tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    #weather-forecast tr:hover {
+      background-color: #ddd;
+    }
+
+    #weather-forecast th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #04AA6D;
+      color: white;
+    }
+
+    .weather-icon {
+      font-size: 1.2em;
+      margin-right: 8px;
+    }
+
+    .cloudy {
+      color: #7a7a7a;
+    }
+
+    .rainy {
+      color: #00f;
+    }
+
+    .sunny {
+      color: #f90;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Weather in <%= @city || "the selected location" %></h1>
+<% if @weather_data %>
+  <p>Temperature: <%= @weather_data['list'].first['main']['temp'] %>°C</p>
+  <p>Humidity: <%= @weather_data['list'].first['main']['humidity'] %>%</p>
+  <p>Description: <%= @weather_data['list'].first['weather'][0]['description'].capitalize %></p>
+
+  <h2>5-Day Forecast</h2>
+  <table id="weather-forecast">
+    <tr>
+      <th>Date</th>
+      <th>Temperature (°C)</th>
+      <th>Humidity (%)</th>
+      <th>Weather</th>
+    </tr>
+    <% # Group forecasts by day and display only the first forecast for each day %>
+    <% grouped_forecasts = @weather_data['list'].group_by { |entry| Time.at(entry['dt']).to_date } %>
+    <% grouped_forecasts.each do |date, forecasts| %>
+      <% forecast = forecasts.first %> <!-- Take the first forecast entry for each day -->
+      <tr>
+        <td><%= date.strftime('%A, %d %B') %></td>
+        <td><%= forecast['main']['temp'] %>°C</td>
+        <td><%= forecast['main']['humidity'] %>%</td>
+        <td>
+          <% weather_main = forecast['weather'][0]['main'] %>
+          <% if weather_main == 'Clouds' %>
+            <i class="fas fa-cloud weather-icon cloudy"></i> Cloudy
+          <% elsif weather_main == 'Rain' %>
+            <i class="fas fa-cloud-showers-heavy weather-icon rainy"></i> Rainy
+          <% elsif weather_main == 'Clear' %>
+            <i class="fas fa-sun weather-icon sunny"></i> Sunny
+          <% else %>
+            <i class="fas fa-question-circle weather-icon"></i> <%= weather_main %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+<% else %>
+  <p>No weather data available.</p>
+<% end %>
+
+<a href="/">Check another city</a>
+<a href="/map">View Map</a>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
